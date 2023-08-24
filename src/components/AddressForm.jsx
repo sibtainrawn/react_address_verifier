@@ -4,16 +4,51 @@ import axios from "axios";
 
 export default function AddressForm() {
   const [validatedAddress, setValidatedAddress] = useState({});
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zip5, setZip5] = useState('');
-  const [error, setError] = useState('');
-  
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip5, setZip5] = useState("");
+  const [error, setError] = useState("");
+
+  const [address1Error, setAddress1Error] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [stateError, setStateError] = useState("");
+  const [zip5Error, setZip5Error] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setAddress1Error("");
+    setCityError("");
+    setStateError("");
+    setZip5Error("");
+
+    let hasErrors = false;
+
+    if (!address1) {
+      setAddress1Error("Address 1 is required.");
+      hasErrors = true;
+    }
+
+    if (!city) {
+      setCityError("City is required.");
+      hasErrors = true;
+    }
+
+    if (!state) {
+      setStateError("State is required.");
+      hasErrors = true;
+    }
+
+    if (!zip5) {
+      setZip5Error("Zip5 is required.");
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return;
+    }
 
     const xml = `
       <AddressValidateRequest USERID="9251ABC005A13">
@@ -87,26 +122,29 @@ export default function AddressForm() {
           >
             <div className="col-md-12">
               <h4 className="mb-3">Mailing Address</h4>
-              { error && error !='' && <div className="alert alert-danger">
-              {error}
-              </div>}
+              {error && error != "" && (
+                <div className="alert alert-danger">{error}</div>
+              )}
             </div>
             <div className="col-md-12">
               <label htmlFor="validationAddress1" className="form-label">
-                Adress 1
+                Address 1
               </label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${address1Error && "is-invalid"}`}
                 id="validationAddress1"
-                // value="1234 Main Street"
                 placeholder="Appartment or Suit "
                 value={address1}
-                onChange={(e) => setAddress1(e.target.value)}
+                onChange={(e) => {
+                  setAddress1(e.target.value);
+                  setAddress1Error("");
+                }}
                 required
-
               />
-              <div className="valid-feedback">Looks good!</div>
+              {address1Error && (
+                <div className="invalid-feedback">{address1Error}</div>
+              )}
             </div>
             <div className="col-md-12">
               <label htmlFor="validationAddress2" className="form-label">
@@ -118,12 +156,10 @@ export default function AddressForm() {
                 id="validationAddress2"
                 // value="Appartment or Suit"
                 placeholder="1234 Main Street"
-                
                 value={address2}
                 onChange={(e) => setAddress2(e.target.value)}
                 required
               />
-              <div className="valid-feedback">Looks good!</div>
             </div>
             <div className="col-md-5">
               <label htmlFor="validationCity" className="form-label">
@@ -131,16 +167,19 @@ export default function AddressForm() {
               </label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${cityError && "is-invalid"}`}
                 id="validationCity"
                 placeholder="City"
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  setCityError("");
+                }}
                 required
               />
-              <div className="invalid-feedback">
-                Please provide a valid city.
-              </div>
+              {cityError && (
+                <div className="invalid-feedback">{cityError}</div>
+              )}
             </div>
             <div className="col-md-4">
               <label htmlFor="validationState" className="form-label">
@@ -148,16 +187,19 @@ export default function AddressForm() {
               </label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${stateError && "is-invalid"}`}
                 id="validationState"
                 placeholder="State"
                 value={state}
-                onChange={(e) => setState(e.target.value)}
+                onChange={(e) => {
+                  setState(e.target.value);
+                  setStateError("");
+                }}
                 required
               />
-              <div className="invalid-feedback">
-                Please select a valid state.
-              </div>
+              {stateError && (
+                <div className="invalid-feedback">{stateError}</div>
+              )}
             </div>
             <div className="col-md-3">
               <label htmlFor="validationZip5" className="form-label">
@@ -165,16 +207,19 @@ export default function AddressForm() {
               </label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${zip5Error && "is-invalid"}`}
                 id="validationZip5"
                 placeholder="Zip5"
-                required
                 value={zip5}
-                onChange={(e) => setZip5(e.target.value)}
+                onChange={(e) => {
+                  setZip5(e.target.value);
+                  setZip5Error("");
+                }}
+                required
               />
-              <div className="invalid-feedback">
-                Please provide a valid zip.
-              </div>
+              {zip5Error && (
+                <div className="invalid-feedback">{zip5Error}</div>
+              )}
             </div>
             {/* <div className="col-12">
               <div className="form-check">
@@ -195,7 +240,7 @@ export default function AddressForm() {
             </div> */}
             <div className="col-12">
               <button className="btn btn-primary" type="submit">
-                Submit form
+                Validate
               </button>
             </div>
           </form>
